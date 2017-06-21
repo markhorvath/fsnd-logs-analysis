@@ -1,0 +1,1 @@
+create view views as select path, count(*) as views from log where status = '200 OK' and path != '/' group by path order by views DESC;
