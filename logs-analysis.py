@@ -17,7 +17,7 @@ def get_top_articles():
     results = c.fetchall()
     print('\n' + 'The top 3 most viewed articles are:')
     for (title, views) in results:
-        print('"' + title + '" - ' + str(views))
+        print('"' + title + '" - ' + str(views) + ' views')
     db.close()
     
 def get_top_authors():
@@ -33,10 +33,13 @@ def get_top_authors():
 def get_errors():
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    c.execute("select time::timestamp::date, count(log.time) as num from log where status != '200 OK' group by time::timestamp::date limit 10;")
+    c.execute("select to_char(date, 'fmMonth DD, YYYY') as day, percent from geterrors where percent > 1.0;")
     results = c.fetchall()
-    print(results)
+    print('\n' + 'Days where more than 1% of requests led to errors:')
+    for (day, percent) in results:
+        print(str(day) + ' - ' + str(percent) + '% errors')
     db.close()
     
 get_top_articles()
 get_top_authors()
+get_errors()
