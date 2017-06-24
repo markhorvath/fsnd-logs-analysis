@@ -14,8 +14,8 @@ DBNAME = "news"
 def get_top_articles():
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    c.execute("""select articles.title, views.views 
-                  from articles 
+    c.execute("""select articles.title, views.views
+                  from articles
                   join views on views.path like '%' || articles.slug limit 3;
               """)
     results = c.fetchall()
@@ -28,10 +28,10 @@ def get_top_articles():
 def get_top_authors():
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    c.execute("""select authors.name, sum(views) 
-                 from authors, titleview 
-                 where authors.id = titleview.author 
-                 group by authors.name 
+    c.execute("""select authors.name, sum(views)
+                 from authors, titleview
+                 where authors.id = titleview.author
+                 group by authors.name
                  order by sum DESC;
               """)
     results = c.fetchall()
@@ -44,8 +44,8 @@ def get_top_authors():
 def get_errors():
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    c.execute("""select to_char(date, 'fmMonth DD, YYYY') as day, percent 
-                 from geterrors 
+    c.execute("""select to_char(date, 'fmMonth DD, YYYY') as day, percent
+                 from geterrors
                  where percent > 1.0;
               """)
     results = c.fetchall()
@@ -54,7 +54,7 @@ def get_errors():
         print(str(day) + ' - ' + str(percent) + '% errors')
     db.close()
 
-
-get_top_articles()
-get_top_authors()
-get_errors()
+if __name__ == '__main__':
+    get_top_articles()
+    get_top_authors()
+    get_errors()
